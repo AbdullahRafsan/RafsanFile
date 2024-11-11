@@ -1,4 +1,5 @@
 const fs = require("fs");
+const os = require("os");
 const path = require("path");
 
 function cd(frontendDir) {
@@ -52,7 +53,7 @@ function ls(dir) {
   };
 }
 
-function download(req,res) {
+function download(req, res) {
   const file = backendify(req.query.file);
   if (fs.existsSync(file)) {
     res.download(file);
@@ -60,8 +61,39 @@ function download(req,res) {
     res.sendStatus(404);
   }
 }
+
+function get_ip_addr() {
+  let ip_addr = [];
+  let device_list = os.networkInterfaces();
+  for (let device in device_list) {
+    let dev = device_list[device];
+    if (dev == undefined) return [];
+    for (let ip of dev) {
+      if (ip.internal) continue;
+      if (ip.family == "IPv4") {
+        ip_addr.push(ip.address);
+      }
+    }
+  }
+  return ip_addr;
+}
+
+function run_stat() {
+  let port = process.env.PORT || 5000;
+  let localhost = `http://localhost:${port}`;
+  let net_stat = get_ip_addr();
+  console.log(`Server is started ! Home: ${process.env.RFS_HOME} `);
+  console.log("Available at:");
+  console.log(`On this device: \n\t${localhost}`);
+  console.log("On local network: ");
+  net_stat.forEach((ip) => {
+    console.log(`\thttp://${ip}:${port}`);
+  });
+}
+
 module.exports = {
   cd,
   ls,
   download,
+  run_stat,
 };

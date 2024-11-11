@@ -1,23 +1,20 @@
 const express = require("express");
+const path = require("path");
 const fs = require("fs");
 const upload = require("./rafsan_file/upload");
 const cors = require("cors");
-const { cd, ls, download } = require("./rafsan_file/tools");
+const { cd, ls, download, run_stat } = require("./rafsan_file/tools");
 const app = express();
-const port = 5000;
+const port = process.env.PORT || 5000;
 
 process.env.RFS_HOME = process.env.RFS_HOME || process.cwd();
 process.chdir(process.env.RFS_HOME);
 
-app.use("/", express.static("app"));
+app.use(express.static(path.join(__dirname, "dist")));
 app.use(express.json());
 app.use(cors());
 
-app.listen(port, () => {
-  console.log(
-    `Server is running on port ${port}\nServer home: ${process.env.RFS_HOME}`
-  );
-});
+app.listen(port, run_stat);
 
 app.get("/api/ls", (_req, res) => {
   res.send(ls());
