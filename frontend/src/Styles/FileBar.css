@@ -1,0 +1,14 @@
+.file_bar{
+    width: 100%;
+    height: 64px;
+    display: flex;
+    align-items: center;
+}
+
+.file_bar_color_title {
+    color: #C6001B;
+}
+
+.file_bar_spacer {
+    flex-grow: 1;
+}
